@@ -8,7 +8,10 @@ export function ThemeToggle() {
   const { resolvedTheme, setTheme } = useTheme();
   const [mounted, setMounted] = useState(false);
 
-  useEffect(() => setMounted(true), []);
+  useEffect(() => {
+    // eslint-disable-next-line react-hooks/set-state-in-effect -- mount check to avoid hydration mismatch
+    setMounted(true);
+  }, []);
 
   if (!mounted) {
     return <div className="h-9 w-9" />;

@@ -1,10 +1,19 @@
 "use client";
 
-import { CheckCircle2, CircleHelp } from "lucide-react";
+import { CheckCircle2, CircleHelp, Eraser } from "lucide-react";
 import { detectWatermarkLayers } from "@/lib/lottie/detector";
+import { stripLayers } from "@/lib/lottie/stripper";
 import type { LottieFile } from "@/lib/lottie/types";
 
-export function DetectionSummary({ file, fileName }: { file: LottieFile; fileName: string }) {
+export function DetectionSummary({
+  file,
+  fileName,
+  onStripped,
+}: {
+  file: LottieFile;
+  fileName: string;
+  onStripped: (stripped: LottieFile) => void;
+}) {
   const matches = detectWatermarkLayers(file);
   const detected = matches.length > 0;
 
@@ -29,6 +38,17 @@ export function DetectionSummary({ file, fileName }: { file: LottieFile; fileNam
           ? `Watermark layer detected (${matches[0].reason})`
           : "No known watermark pattern matched — select the layer manually"}
       </div>
+
+      {detected && (
+        <button
+          type="button"
+          onClick={() => onStripped(stripLayers(file, matches.map((m) => m.layerIndex)))}
+          className="flex items-center justify-center gap-2 rounded-xl bg-accent py-2.5 text-sm font-medium text-accent-foreground"
+        >
+          <Eraser size={14} />
+          Remove watermark
+        </button>
+      )}
     </div>
   );
 }

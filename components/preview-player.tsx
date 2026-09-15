@@ -24,9 +24,5 @@ export function PreviewPlayer({ file }: { file: LottieFile }) {
     };
   }, [file]);
 
-  return (
-    <div className="glass-panel flex aspect-square w-full items-center justify-center overflow-hidden rounded-2xl p-4">
-      <div ref={containerRef} className="h-full w-full" />
-    </div>
-  );
+  return <div ref={containerRef} className="absolute inset-0" />;
 }

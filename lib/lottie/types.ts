@@ -35,3 +35,10 @@ export interface WatermarkMatch {
   confidence: "high" | "low";
   reason: string;
 }
+
+export interface LottieShapeItem {
+  ty: string;
+  it?: LottieShapeItem[];
+  c?: { a?: number; k?: unknown };
+  [key: string]: unknown;
+}

@@ -9,10 +9,12 @@ export function DetectionSummary({
   file,
   fileName,
   onStripped,
+  onOpenPicker,
 }: {
   file: LottieFile;
   fileName: string;
   onStripped: (stripped: LottieFile) => void;
+  onOpenPicker: () => void;
 }) {
   const matches = detectWatermarkLayers(file);
   const detected = matches.length > 0;
@@ -49,6 +51,14 @@ export function DetectionSummary({
           Remove watermark
         </button>
       )}
+
+      <button
+        type="button"
+        onClick={onOpenPicker}
+        className="text-xs text-foreground-muted underline-offset-2 hover:text-foreground hover:underline"
+      >
+        {detected ? "Not the right layer? Choose manually" : "Choose the layer manually"}
+      </button>
     </div>
   );
 }

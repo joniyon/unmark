@@ -2,18 +2,24 @@
 
 import { useState } from "react";
 import { RotateCcw } from "lucide-react";
+import type { AnimationItem } from "lottie-web";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { UploadZone, type ParsedLottie } from "@/components/upload-zone";
 import { PreviewPlayer } from "@/components/preview-player";
 import { DetectionSummary } from "@/components/detection-summary";
 import { ASPECT_PRESETS, CropOverlay, applyAspectPreset, type CropRect } from "@/components/crop-overlay";
 import { ExportPanel } from "@/components/export-panel";
+import { LayerHighlightOverlay, LayerListPanel } from "@/components/layer-picker";
+import { stripLayers } from "@/lib/lottie/stripper";
 import type { LottieFile } from "@/lib/lottie/types";
 
 export default function Home() {
   const [parsed, setParsed] = useState<ParsedLottie | null>(null);
   const [workingFile, setWorkingFile] = useState<LottieFile | null>(null);
   const [crop, setCrop] = useState<CropRect | null>(null);
+  const [anim, setAnim] = useState<AnimationItem | null>(null);
+  const [pickerOpen, setPickerOpen] = useState(false);
+  const [hoveredInd, setHoveredInd] = useState<number | null>(null);
 
   const activeFile = workingFile ?? parsed?.file ?? null;
 
@@ -21,12 +27,23 @@ export default function Home() {
     setParsed(null);
     setWorkingFile(null);
     setCrop(null);
+    setPickerOpen(false);
+    setHoveredInd(null);
   };
 
   const handleParsed = (result: ParsedLottie) => {
     setParsed(result);
     setWorkingFile(null);
     setCrop({ x: 0, y: 0, w: result.file.w, h: result.file.h });
+    setPickerOpen(false);
+    setHoveredInd(null);
+  };
+
+  const handleManualSelect = (ind: number) => {
+    if (!activeFile) return;
+    setWorkingFile(stripLayers(activeFile, [ind]));
+    setPickerOpen(false);
+    setHoveredInd(null);
   };
 
   return (
@@ -57,8 +74,22 @@ export default function Home() {
                 file={activeFile}
                 fileName={parsed.fileName}
                 onStripped={setWorkingFile}
+                onOpenPicker={() => setPickerOpen(true)}
               />
-              <ExportPanel file={activeFile} crop={crop} fileName={parsed.fileName} />
+              {pickerOpen ? (
+                <LayerListPanel
+                  layers={activeFile.layers}
+                  hoveredInd={hoveredInd}
+                  onHover={setHoveredInd}
+                  onSelect={handleManualSelect}
+                  onCancel={() => {
+                    setPickerOpen(false);
+                    setHoveredInd(null);
+                  }}
+                />
+              ) : (
+                <ExportPanel file={activeFile} crop={crop} fileName={parsed.fileName} />
+              )}
             </div>
 
             <div className="flex flex-col gap-4">
@@ -66,35 +97,40 @@ export default function Home() {
                 className="glass-panel relative overflow-hidden rounded-2xl"
                 style={{ aspectRatio: `${activeFile.w} / ${activeFile.h}` }}
               >
-                <PreviewPlayer file={activeFile} />
-                {workingFile && (
-                  <CropOverlay
-                    naturalWidth={activeFile.w}
-                    naturalHeight={activeFile.h}
-                    crop={crop}
-                    onChange={setCrop}
-                  />
+                <PreviewPlayer file={activeFile} onReady={setAnim} />
+                {pickerOpen ? (
+                  <LayerHighlightOverlay anim={anim} hoveredInd={hoveredInd} />
+                ) : (
+                  workingFile && (
+                    <CropOverlay
+                      naturalWidth={activeFile.w}
+                      naturalHeight={activeFile.h}
+                      crop={crop}
+                      onChange={setCrop}
+                    />
+                  )
                 )}
               </div>
 
-              {workingFile ? (
-                <div className="flex flex-wrap justify-center gap-2">
-                  {ASPECT_PRESETS.map((p) => (
-                    <button
-                      key={p.label}
-                      type="button"
-                      onClick={() => setCrop(applyAspectPreset(p.ratio, crop, activeFile.w, activeFile.h))}
-                      className="glass-panel rounded-lg px-3 py-1.5 text-xs text-foreground-muted transition-colors hover:text-foreground"
-                    >
-                      {p.label}
-                    </button>
-                  ))}
-                </div>
-              ) : (
-                <p className="text-center text-xs text-foreground-muted">
-                  Remove the watermark to unlock cropping.
-                </p>
-              )}
+              {!pickerOpen &&
+                (workingFile ? (
+                  <div className="flex flex-wrap justify-center gap-2">
+                    {ASPECT_PRESETS.map((p) => (
+                      <button
+                        key={p.label}
+                        type="button"
+                        onClick={() => setCrop(applyAspectPreset(p.ratio, crop, activeFile.w, activeFile.h))}
+                        className="glass-panel rounded-lg px-3 py-1.5 text-xs text-foreground-muted transition-colors hover:text-foreground"
+                      >
+                        {p.label}
+                      </button>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-center text-xs text-foreground-muted">
+                    Remove the watermark to unlock cropping.
+                  </p>
+                ))}
             </div>
 
             <button

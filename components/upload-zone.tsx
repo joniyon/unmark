@@ -2,7 +2,7 @@
 
 import { useCallback, useRef, useState } from "react";
 import { UploadCloud, AlertTriangle, FileWarning } from "lucide-react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import { parseLottieFile, InvalidLottieError } from "@/lib/lottie/parser";
 import type { LottieFile } from "@/lib/lottie/types";
 
@@ -77,10 +77,10 @@ export function UploadZone({ onParsed }: { onParsed: (result: ParsedLottie) => v
         onKeyDown={(e) => {
           if (e.key === "Enter" || e.key === " ") inputRef.current?.click();
         }}
-        className={clsx(
+        className={cn(
           "glass-panel flex cursor-pointer flex-col items-center gap-4 rounded-3xl px-8 py-16 text-center transition-all duration-200",
-          state === "dragging" && "scale-[1.01] ring-2 ring-accent/60",
-          state === "error" && "ring-1 ring-danger/50"
+          state === "dragging" && "scale-[1.01] ring-2 ring-primary/60",
+          state === "error" && "ring-1 ring-destructive/50"
         )}
       >
         <input
@@ -92,9 +92,9 @@ export function UploadZone({ onParsed }: { onParsed: (result: ParsedLottie) => v
         />
 
         <div
-          className={clsx(
+          className={cn(
             "flex h-14 w-14 items-center justify-center rounded-full transition-colors",
-            state === "error" ? "bg-danger/10 text-danger" : "bg-accent/10 text-accent"
+            state === "error" ? "bg-destructive/10 text-destructive" : "bg-primary/10 text-primary"
           )}
         >
           {state === "error" ? <AlertTriangle size={24} /> : <UploadCloud size={24} />}
@@ -104,21 +104,21 @@ export function UploadZone({ onParsed }: { onParsed: (result: ParsedLottie) => v
           <p className="text-base font-medium text-foreground">
             {state === "dragging" ? "Drop it here" : "Drop your Lottie file here"}
           </p>
-          <p className="text-sm text-foreground-muted">
+          <p className="text-sm text-muted-foreground">
             or click to browse — .json exports only
           </p>
         </div>
       </div>
 
       {error && (
-        <p className="mt-3 flex items-center gap-2 text-sm text-danger">
+        <p className="mt-3 flex items-center gap-2 text-sm text-destructive">
           <FileWarning size={14} />
           {error}
         </p>
       )}
 
       {warning && !error && (
-        <p className="mt-3 flex items-center gap-2 text-sm text-foreground-muted">
+        <p className="mt-3 flex items-center gap-2 text-sm text-muted-foreground">
           <AlertTriangle size={14} />
           {warning}
         </p>

@@ -2,7 +2,7 @@
 
 import { useState } from "react";
 import { Download, Loader2 } from "lucide-react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import type { LottieFile } from "@/lib/lottie/types";
 import type { CropRect } from "./crop-overlay";
 import { exportAnimation, MAX_EXPORT_DIMENSION, type ExportFormat } from "@/lib/export/exporter";
@@ -71,9 +71,9 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
             key={f}
             type="button"
             onClick={() => setFormat(f)}
-            className={clsx(
+            className={cn(
               "flex-1 rounded-xl py-2 text-sm font-medium transition-colors",
-              format === f ? "bg-accent text-accent-foreground" : "bg-foreground/5 text-foreground-muted"
+              format === f ? "bg-primary text-primary-foreground" : "bg-foreground/5 text-muted-foreground"
             )}
           >
             {f.toUpperCase()}
@@ -87,9 +87,9 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
             key={r.label}
             type="button"
             onClick={() => setMaxDim(r.maxDim)}
-            className={clsx(
+            className={cn(
               "flex-1 rounded-xl py-2 text-xs font-medium transition-colors",
-              maxDim === r.maxDim ? "bg-accent/15 text-accent" : "bg-foreground/5 text-foreground-muted"
+              maxDim === r.maxDim ? "bg-primary/15 text-primary" : "bg-foreground/5 text-muted-foreground"
             )}
           >
             {r.label}
@@ -97,21 +97,21 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
         ))}
       </div>
 
-      <p className="text-xs text-foreground-muted">
+      <p className="text-xs text-muted-foreground">
         Output {outW}&times;{outH}
       </p>
 
-      {error && <p className="text-sm text-danger">{error}</p>}
+      {error && <p className="text-sm text-destructive">{error}</p>}
 
       {progress && (
         <div className="space-y-1">
           <div className="h-1.5 w-full overflow-hidden rounded-full bg-foreground/10">
             <div
-              className="h-full rounded-full bg-accent transition-all"
+              className="h-full rounded-full bg-primary transition-all"
               style={{ width: `${(progress.frame / Math.max(1, progress.totalFrames)) * 100}%` }}
             />
           </div>
-          <p className="flex items-center gap-1.5 text-xs text-foreground-muted">
+          <p className="flex items-center gap-1.5 text-xs text-muted-foreground">
             <Loader2 size={12} className="animate-spin" />
             Rendering frame {progress.frame} of {progress.totalFrames}
           </p>
@@ -122,7 +122,7 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
         <a
           href={download.url}
           download={`${baseName}-unmarked.${format}`}
-          className="flex items-center justify-center gap-2 rounded-xl bg-accent py-3 text-sm font-medium text-accent-foreground"
+          className="flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-medium text-primary-foreground"
         >
           <Download size={14} />
           Download {format.toUpperCase()}
@@ -132,7 +132,7 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
           type="button"
           onClick={handleExport}
           disabled={busy}
-          className="flex items-center justify-center gap-2 rounded-xl bg-accent py-3 text-sm font-medium text-accent-foreground disabled:opacity-50"
+          className="flex items-center justify-center gap-2 rounded-xl bg-primary py-3 text-sm font-medium text-primary-foreground disabled:opacity-50"
         >
           {busy ? <Loader2 size={14} className="animate-spin" /> : <Download size={14} />}
           {busy ? "Exporting..." : `Export ${format.toUpperCase()}`}

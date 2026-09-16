@@ -60,7 +60,7 @@ export default function Home() {
               <h1 className="text-2xl font-medium text-foreground">
                 Remove the watermark from your Lottie file
               </h1>
-              <p className="mt-2 text-sm text-foreground-muted">
+              <p className="mt-2 text-sm text-muted-foreground">
                 Upload your animation, we&apos;ll find the watermark layer, then export a clean
                 GIF or MP4.
               </p>
@@ -120,14 +120,14 @@ export default function Home() {
                         key={p.label}
                         type="button"
                         onClick={() => setCrop(applyAspectPreset(p.ratio, crop, activeFile.w, activeFile.h))}
-                        className="glass-panel rounded-lg px-3 py-1.5 text-xs text-foreground-muted transition-colors hover:text-foreground"
+                        className="glass-panel rounded-lg px-3 py-1.5 text-xs text-muted-foreground transition-colors hover:text-foreground"
                       >
                         {p.label}
                       </button>
                     ))}
                   </div>
                 ) : (
-                  <p className="text-center text-xs text-foreground-muted">
+                  <p className="text-center text-xs text-muted-foreground">
                     Remove the watermark to unlock cropping.
                   </p>
                 ))}
@@ -136,7 +136,7 @@ export default function Home() {
             <button
               type="button"
               onClick={reset}
-              className="glass-panel col-span-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm text-foreground-muted transition-colors hover:text-foreground"
+              className="glass-panel col-span-full flex items-center justify-center gap-2 rounded-xl py-3 text-sm text-muted-foreground transition-colors hover:text-foreground"
             >
               <RotateCcw size={14} />
               Start over

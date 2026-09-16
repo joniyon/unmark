@@ -3,7 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import type { AnimationItem } from "lottie-web";
 import { MousePointerClick, X } from "lucide-react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 import type { LottieLayer } from "@/lib/lottie/types";
 
 const TYPE_LABELS: Record<number, string> = {
@@ -78,7 +78,7 @@ export function LayerHighlightOverlay({
   return (
     <div className="pointer-events-none absolute inset-0">
       <div
-        className="absolute rounded-sm ring-2 ring-accent bg-accent/15 transition-[left,top,width,height] duration-75"
+        className="absolute rounded-sm ring-2 ring-primary bg-primary/15 transition-[left,top,width,height] duration-75"
         style={{ left: `${box.left}%`, top: `${box.top}%`, width: `${box.width}%`, height: `${box.height}%` }}
       />
     </div>
@@ -105,11 +105,11 @@ export function LayerListPanel({
           <MousePointerClick size={14} />
           Select the watermark layer
         </p>
-        <button type="button" onClick={onCancel} aria-label="Cancel" className="text-foreground-muted hover:text-foreground">
+        <button type="button" onClick={onCancel} aria-label="Cancel" className="text-muted-foreground hover:text-foreground">
           <X size={16} />
         </button>
       </div>
-      <p className="text-xs text-foreground-muted">
+      <p className="text-xs text-muted-foreground">
         Hover a layer to highlight it on the preview, then click to remove it.
       </p>
       <div className="max-h-64 space-y-1 overflow-y-auto">
@@ -120,13 +120,13 @@ export function LayerListPanel({
             onMouseEnter={() => onHover(layer.ind)}
             onMouseLeave={() => onHover(null)}
             onClick={() => onSelect(layer.ind)}
-            className={clsx(
+            className={cn(
               "flex w-full items-center justify-between rounded-lg px-3 py-2 text-left text-sm transition-colors",
-              hoveredInd === layer.ind ? "bg-accent/15 text-accent" : "text-foreground-muted hover:bg-foreground/5"
+              hoveredInd === layer.ind ? "bg-primary/15 text-primary" : "text-muted-foreground hover:bg-foreground/5"
             )}
           >
             <span>{layer.nm || `Layer ${layer.ind}`}</span>
-            <span className="text-xs text-foreground-muted">{TYPE_LABELS[layer.ty] ?? `Type ${layer.ty}`}</span>
+            <span className="text-xs text-muted-foreground">{TYPE_LABELS[layer.ty] ?? `Type ${layer.ty}`}</span>
           </button>
         ))}
       </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useCallback, useRef } from "react";
-import clsx from "clsx";
+import { cn } from "@/lib/utils";
 
 export interface CropRect {
   x: number;
@@ -164,7 +164,7 @@ export function CropOverlay({
     >
       <div
         onPointerDown={(e) => beginDrag(e, "move")}
-        className="absolute cursor-move ring-2 ring-accent"
+        className="absolute cursor-move ring-2 ring-primary"
         style={{
           left: pct(crop.x, naturalWidth),
           top: pct(crop.y, naturalHeight),
@@ -183,8 +183,8 @@ export function CropOverlay({
           <div
             key={h}
             onPointerDown={(e) => beginDrag(e, h)}
-            className={clsx(
-              "absolute h-3 w-3 rounded-full border-2 border-accent bg-white",
+            className={cn(
+              "absolute h-3 w-3 rounded-full border-2 border-primary bg-white",
               h.includes("n") && "-top-1.5",
               h.includes("s") && "-bottom-1.5",
               h.includes("w") && "-left-1.5",

@@ -1,7 +1,7 @@
 "use client";
 
-import { useState } from "react";
-import { Download, Loader2 } from "lucide-react";
+import { useEffect, useMemo, useState } from "react";
+import { Download, FileJson, Loader2 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import type { LottieFile } from "@/lib/lottie/types";
 import type { CropRect } from "./crop-overlay";
@@ -24,6 +24,12 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
     outH: number;
     crop: CropRect;
   } | null>(null);
+
+  const jsonUrl = useMemo(
+    () => URL.createObjectURL(new Blob([JSON.stringify(file)], { type: "application/json" })),
+    [file]
+  );
+  useEffect(() => () => URL.revokeObjectURL(jsonUrl), [jsonUrl]);
 
   const cropRatio = crop.w / crop.h;
   const outW = cropRatio >= 1 ? maxDim : Math.round(maxDim * cropRatio);
@@ -138,6 +144,15 @@ export function ExportPanel({ file, crop, fileName }: { file: LottieFile; crop: 
           {busy ? "Exporting..." : `Export ${format.toUpperCase()}`}
         </button>
       )}
+
+      <a
+        href={jsonUrl}
+        download={`${baseName}-unmarked.json`}
+        className="flex items-center justify-center gap-2 rounded-xl bg-foreground/5 py-2.5 text-xs font-medium text-muted-foreground transition-colors hover:text-foreground"
+      >
+        <FileJson size={13} />
+        Download cleaned JSON
+      </a>
     </div>
   );
 }
